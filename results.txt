@@ -1,0 +1,7 @@
+--- Execution Results ---
+Need Retrieval : True
+Retrieved Docs : 4
+Relevant Docs  : 3
+IsSUP Decision : no_support
+Evidence       : ['The provided context lists pricing for Starter, Growth, and Enterprise plans along with their features, but contains no mention of a free trial for any NexaAI plan.']
+Final Answer   : Based on the provided context, there is no mention of a free trial for any NexaAI plans. The document details pricing and features for Starter, Growth, and Enterprise plans, but does not specify any free trial period.

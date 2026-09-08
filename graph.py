@@ -82,6 +82,9 @@ workflow = create_graph()
 app = workflow.compile()
 
 if __name__ == "__main__":
+    import sys
+    if sys.platform == "win32":
+        sys.stdout.reconfigure(encoding="utf-8")
     initial_input = {
         "question": "Do NexaAI plans include a free trial? If yes, how many days?",
         "docs": [],
