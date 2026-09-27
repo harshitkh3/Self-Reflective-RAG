@@ -6,6 +6,7 @@ dist/
 wheels/
 *.egg-info
 chroma_db
+tests
 # Virtual environments
 .venv
 
