@@ -20,6 +20,11 @@ def generate_direct(state: Dict[str, Any]) -> Dict[str, Any]:
         out = llm.invoke(
             direct_generation_prompt.format_messages(question=state["question"])
         )
-        return {"answer": out.content}
+        content = out.content
+        if isinstance(content, list):
+            content = "".join(
+                [b.get("text", "") if isinstance(b, dict) else str(b) for b in content]
+            )
+        return {"answer": content}
     except Exception as e:
         return {"answer": f"Error generating direct answer: {e}"}

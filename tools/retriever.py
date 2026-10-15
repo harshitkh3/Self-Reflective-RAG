@@ -13,28 +13,35 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 DOCS_DIR = BASE_DIR / "documents"
 
-pdf_files = [
-    DOCS_DIR / "Company_Policies.pdf",
-    DOCS_DIR / "Company_Profile.pdf",
-    DOCS_DIR / "Product_and_Pricing.pdf",
-]
-
-
 def load_documents() -> List:
     docs = []
+    target_dir = DOCS_DIR if DOCS_DIR.exists() else Path("./documents")
+    pdf_files = list(target_dir.glob("*.pdf"))
     for pdf_file in pdf_files:
-        if pdf_file.exists():
+        try:
             loader = PyPDFLoader(str(pdf_file))
             docs.extend(loader.load())
-        else:
-            # Fallback to relative path
-            fallback = Path("./documents") / pdf_file.name
-            if fallback.exists():
-                loader = PyPDFLoader(str(fallback))
-                docs.extend(loader.load())
-            else:
-                raise FileNotFoundError(f"Document not found: {pdf_file}")
+        except Exception as e:
+            print(f"Warning: could not load {pdf_file}: {e}")
     return docs
+
+
+def get_embeddings():
+    google_api_key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+
+    if google_api_key:
+        from langchain_google_genai import GoogleGenerativeAIEmbeddings
+        return GoogleGenerativeAIEmbeddings(
+            model="models/gemini-embedding-001",
+            google_api_key=google_api_key,
+        )
+    elif openai_api_key:
+        from langchain_openai import OpenAIEmbeddings
+        return OpenAIEmbeddings(model="text-embedding-3-small", api_key=openai_api_key)
+    else:
+        from langchain_ollama import OllamaEmbeddings
+        return OllamaEmbeddings(model="mxbai-embed-large")
 
 
 def create_retriever():
@@ -44,7 +51,7 @@ def create_retriever():
         chunk_overlap=150,
     ).split_documents(docs)
 
-    embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+    embeddings = get_embeddings()
     vector_store = Chroma.from_documents(
         documents=chunks,
         embedding=embeddings,
@@ -60,6 +67,11 @@ def get_retriever():
     if _retriever_instance is None:
         _retriever_instance = create_retriever()
     return _retriever_instance
+
+
+def reset_retriever():
+    global _retriever_instance
+    _retriever_instance = None
 
 
 class LazyRetriever:

@@ -29,7 +29,12 @@ def generate_from_context(state: Dict[str, Any]) -> Dict[str, Any]:
                 question=state["question"], context=context
             )
         )
-        return {"answer": out.content, "context": context}
+        content = out.content
+        if isinstance(content, list):
+            content = "".join(
+                [b.get("text", "") if isinstance(b, dict) else str(b) for b in content]
+            )
+        return {"answer": content, "context": context}
     except Exception as e:
         return {
             "answer": f"Error generating answer from context: {e}",

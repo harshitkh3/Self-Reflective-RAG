@@ -107,15 +107,25 @@ You can run [`main.py`](file:///D:/Self-Reflective-RAG/main.py) with the active 
 uv run main.py
 ```
 
-### Using with Jupyter Notebooks
-If you are working with the notebook [`step1_decide.ipynb`](file:///D:/Self-Reflective-RAG/step1_decide.ipynb):
+### Running the Web Application (Interactive UI)
+To launch the modern glassmorphic Web UI with the real-time Self-RAG pipeline stepper:
 
-1. Ensure [`ipykernel`](file:///D:/Self-Reflective-RAG/requirements.txt#L26) is installed in your virtual environment (included in `requirements.txt`).
+```bash
+uv run server.py
+# or with python:
+python server.py
+```
+Open your browser at **http://localhost:8000** to interact with the assistant, upload documents, and view real-time hallucination reflection badges.
+
+### Using with Jupyter Notebooks
+If you are working with the notebook `step1_decide.ipynb`:
+
+1. Ensure `ipykernel` is installed in your virtual environment (included in `requirements.txt`).
 2. Register the kernel (optional if your IDE auto-detects `.venv`):
    ```bash
    python -m ipykernel install --user --name=self-reflective-rag --display-name="Self-Reflective-RAG (Python 3.13)"
    ```
-3. Open [`step1_decide.ipynb`](file:///D:/Self-Reflective-RAG/step1_decide.ipynb) in VS Code or Jupyter and select the `.venv` kernel.
+3. Open `step1_decide.ipynb` in VS Code or Jupyter and select the `.venv` kernel.
 
 ---
 
@@ -123,12 +133,21 @@ If you are working with the notebook [`step1_decide.ipynb`](file:///D:/Self-Refl
 
 ```text
 Self-Reflective-RAG/
-├── .env                  # Environment variables & API keys
+├── .env                  # Environment variables & API keys (local)
+├── .env.example          # Environment variables template
 ├── .python-version       # Python version pinned (3.13)
-├── main.py               # Main entry point
+├── main.py               # Main CLI entry point
+├── server.py             # FastAPI backend for Web Application
+├── static/               # Web Application frontend (HTML, CSS, JS)
+│   ├── index.html        # Modern Glassmorphic Web UI
+│   ├── index.css         # Styling, tokens, animations
+│   └── app.js            # Real-time pipeline visualizer & client logic
+├── documents/            # Business knowledge base documents (PDFs)
+├── nodes/                # LangGraph nodes (decide, retrieve, grade, generate, verify)
+├── tools/                # Vector store retriever (ChromaDB + Gemini Embeddings)
+├── utils/                # LLM initialization (Gemini 3.5 Flash Lite)
 ├── pyproject.toml        # Project configuration & dependencies
-├── requirements.txt      # Pinned requirements list
-├── step1_decide.ipynb    # Decision Graph notebook
+├── requirements.txt      # Dependencies list
 ├── uv.lock               # UV lockfile
 └── README.md             # Project documentation
 ```
